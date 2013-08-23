@@ -1,0 +1,314 @@
+
+<!-- SOMEBODY FIX THIS HTML -->
+<head>
+  <title>VectorEditor</title>
+  <!-- SOMEBODY FIX THIS HTML -->
+<meta name = "viewport" content = "width = device-width">
+</head>
+<body>
+  <div id="canvas" style="position: absolute;top:0;left:0; width: 100%; height: 100%; top: 0px; left: 0px;-webkit-user-select: none;"></div>
+
+  <style>
+    button {
+      width: 28px;
+      height: 28px;
+      margin-bottom: 5px;
+      padding: 1px;
+    }
+  </style>
+    
+    <!-- did i mention i suck at html? -->
+    <div id="dialog" style="position: absolute; display: none;background-color: gray; width: 90%; height: 90%;top: 20px; left: 20px; z-index: 99">
+      <input type="button" value="Import Shapes" onclick="import_shapes()">
+      <!--
+      <input type="button" value="Close" onclick="document.getElementById('dialog').style.display='none'">
+      -->
+      <input type="button" value="Close" onclick="jQuery('#dialog').slideUp()">
+      <br><br>
+      <center>
+      <textarea id="data" style="width: 90%; height: 80%"></textarea>
+      </center>
+    </div>
+    
+    
+    
+  <div style="position: absolute; top: 10px; left: 10px; width: 64px">
+  
+    <button id="select" onclick="setMode('select')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/select.gif" title="Select"></button>
+    <button id="selectp"onclick="setMode('selectp')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/selectadd.gif" title="Select Add"></button>
+    <button id="rect" onclick="setMode('rect')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/rectangle.gif" title="Rectangle"></button>
+    <button id="line" onclick="setMode('line')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/line.gif" title="Line"></button>
+    <button id="ellipse" onclick="setMode('ellipse')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/circle.gif" title="Ellipse"></button>
+    <button id="path" onclick="setMode('path')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/path.gif" title="Path/Freeform"></button>
+    <button id="polygon" onclick="setMode('polygon')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/polygon.gif" title="Polygon"></button>
+    <button id="image" onclick="setMode('image')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/image.gif" title="Image"></button>
+    <button id="text" onclick="setMode('text')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/text.gif" title="Text"></button>
+    <button id="delete" onclick="setMode('delete')"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/icon/delete.gif" title="Delete"></button>
+    <button onclick="alert(editor.getMarkup())"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/script_code.png" title="Markup"></button>
+    <button onclick="if(confirm('Are you sure you want to clear the canvas?'))editor.deleteAll();"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/arrow_rotate_clockwise.png" title="Reset"></button>
+    
+    <button id="save" onclick="save()"><img src="http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/disk.png" title="Delete"></button>
+    <button id="open" onclick="opendialog()"><img src="
+    http://ajaxanimator.googlecode.com/svn/trunk/ajaxanimator/img/silk/folder_go.png" title="Open"></button>
+    
+    
+    <br>
+    
+
+    
+
+
+    <span>Fill:</span> 
+    <select id="fillcolor" onchange="setFillColor(this);" style="background-color:red"> 
+      <option style="background-color:red;" value="red"></option> 
+      <option style="background-color:black;" value="black"></option> 
+      <option style="background-color:navy;" value="navy"></option> 
+      <option style="background-color:fuchsia;" value="fuchsia"></option> 
+      <option style="background-color:red;" value="lime"></option> 
+      <option style="background-color:purple;" value="purple"></option> 
+      <option style="background-color:gray;" value="gray"></option> 
+      <option style="background-color:lime;" value="lime"></option> 
+      <option style="background-color:maroon;" value="maroon"></option> 
+      <option style="background-color:wheat;" value="wheat"></option> 
+      <option style="background-color:blue;" value="blue"></option> 
+      <option style="background-color:green;" value="green"></option> 
+      <option style="background-color:yellow;" value="yellow"></option> 
+      <option style="background-color:aqua;" value="aqua"></option> 
+      <option style="background-color:white;" value="white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+      <option style="background-color:white;" value="none">None</option> 
+    </select> 
+    <select id="fillopacity" onchange="setFillOpacity(this);"> 
+      <option value="1">100%</option> 
+      <option value=".90">90%</option> 
+      <option value=".80">80%</option> 
+      <option value=".70">70%</option> 
+      <option value=".60">60%</option> 
+      <option value=".50">50%</option> 
+      <option value=".40">40%</option> 
+      <option value=".30">30%</option> 
+      <option value=".20">20%</option>
+      <option value=".10">10%</option>  
+    </select> 
+    <span>Stroke:</span> 
+    <select id="strokecolor" onchange="setStrokeColor(this);" style="background-color:black"> 
+      <option style="background-color:red;" value="red"></option> 
+      <option style="background-color:black;" value="black"></option> 
+      <option style="background-color:navy;" value="navy"></option> 
+      <option style="background-color:fuchsia;" value="fuchsia"></option> 
+      <option style="background-color:red;" value="lime"></option> 
+      <option style="background-color:purple;" value="purple"></option> 
+      <option style="background-color:gray;" value="gray"></option> 
+      <option style="background-color:lime;" value="lime"></option> 
+      <option style="background-color:maroon;" value="maroon"></option> 
+      <option style="background-color:wheat;" value="wheat"></option> 
+      <option style="background-color:blue;" value="blue"></option> 
+      <option style="background-color:green;" value="green"></option> 
+      <option style="background-color:yellow;" value="yellow"></option> 
+      <option style="background-color:aqua;" value="aqua"></option> 
+      <option style="background-color:white;" value="white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+      <option style="background-color:white;" value="none">None</option>  
+    </select> 
+    <select id="strokewidth" onchange="setStrokeWidth(this);"> 
+      <option value="1px">1px</option> 
+      <option value="2px">2px</option> 
+      <option value="3px">3px</option> 
+      <option value="4px">4px</option> 
+      <option value="5px">5px</option> 
+      <option value="6px">6px</option>
+      <option value="7px">7px</option> 
+      <option value="8px">8px</option> 
+      <option value="9px">9px</option> 
+      <option value="10px">10px</option>
+    </select> 
+    
+    <select id="strokeopacity" onchange="setStrokeOpacity(this);"> 
+      <option value="1">100%</option> 
+      <option value=".90">90%</option> 
+      <option value=".80">80%</option> 
+      <option value=".70">70%</option> 
+      <option value=".60">60%</option> 
+      <option value=".50">50%</option> 
+      <option value=".40">40%</option> 
+      <option value=".30">30%</option> 
+      <option value=".20">20%</option>
+      <option value=".10">10%</option>  
+    </select> 
+  </div>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script type="text/javascript" src="raphael.js"></script>
+  <script type="text/javascript" src="editor.js"></script>
+  <script type="text/javascript" src="shape.js"></script>
+  <script type="text/javascript" src="tracker.js"></script>
+  <script type="text/javascript">
+  
+  function setMode(mode){
+      if(mode == "text"){
+      editor.prop.text = prompt("Text:",editor.prop.text)
+    }else if(mode == "image"){
+      editor.prop.src = prompt("Image Source URL:",editor.prop.src)
+    }
+    $("button").attr("disabled",null);
+    $("#"+mode).attr("disabled","true");
+    editor.setMode(mode=='selectp'?'select+':mode);
+  }
+
+    
+  function setFillColor(colors) {
+    var color = colors.options[colors.selectedIndex];
+    colors.style.backgroundColor = color.style.backgroundColor;
+    editor.set("fill", color.value)
+  }
+  
+  function setStrokeColor(colors) {
+    var color = colors.options[colors.selectedIndex];
+    colors.style.backgroundColor = color.style.backgroundColor;
+    editor.set("stroke", color.value)
+  }
+  
+  function setStrokeWidth(widths) {
+    var width = widths.options[widths.selectedIndex].value;
+    editor.set("stroke-width",parseInt(width))
+  }
+
+  function setStrokeOpacity(widths) {
+    var width = widths.options[widths.selectedIndex].value;
+    editor.set("stroke-opacity",parseFloat(width))
+  }
+  
+  function setFillOpacity(widths) {
+    var width = widths.options[widths.selectedIndex].value;
+    editor.set("fill-opacity",parseFloat(width))
+  }
+
+  function getOptionByValue(select, value)
+  {
+    for (var i=0; i<select.length; i++) {
+      if (select.options[i].value == value) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  
+  
+  
+  </script>
+  
+  <script type="text/javascript">
+  encode = function(obj){
+  //simple partial JSON encoder implementation
+  if(window.JSON && JSON.stringify) return JSON.stringify(obj);
+  var enc = arguments.callee; //for purposes of recursion
+  
+  if(typeof obj == "boolean" || typeof obj == "number"){
+      return obj+'' //should work...
+  }else if(typeof obj == "string"){
+    //a large portion of this is stolen from Douglas Crockford's json2.js
+    return '"'+
+          obj.replace(
+            /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g
+          , function (a) {
+            return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+          })
+          +'"'; //note that this isn't quite as purtyful as the usualness
+  }else if(obj.length){ //simple hackish test for arrayish-ness
+    for(var i = 0; i < obj.length; i++){
+      obj[i] = enc(obj[i]); //encode every sub-thingy on top
+    }
+    return "["+obj.join(",")+"]";
+  }else{
+    var pairs = []; //pairs will be stored here
+    for(var k in obj){ //loop through thingys
+      pairs.push(enc(k)+":"+enc(obj[k])); //key: value
+    }
+    return "{"+pairs.join(",")+"}" //wrap in the braces
+  }
+}
+
+  function save(){
+    $("#data").val(encode(jQuery.map(editor.shapes,dumpshape)))
+    $("#dialog").slideDown()
+
+    //for(var i = 0; i < editor.shapes.length; i++){
+    //  dumpshape(editor.shapes[i])
+    //}
+  }
+    function opendialog(){
+    $("#data").val("")
+    $("#dialog").slideDown()
+  }
+  function import_shapes(){
+    try{
+      var json = eval("("+$("#data").val()+")");
+      jQuery(json).each(function(index, item){
+        loadShape(item)
+      })
+      $("#dialog").slideUp();
+    }catch(err){
+      alert(err.message)
+    }
+    
+  }
+  var attr = "cx,cy,fill,fill-opacity,font,font-family,font-size,font-weight,gradient,height,opacity,path,r,rotation,rx,ry,src,stroke,stroke-dasharray,stroke-opacity,stroke-width,width,x,y,text".split(",")
+  dumpshape = function(shape){
+    //return Ax.canvas.info(shape)
+    var info = {
+      type: shape.type,
+      id: shape.id,
+      subtype: shape.subtype
+    }
+    for(var i = 0; i < attr.length; i++){
+      var tmp = shape.attr(attr[i]);
+      if(tmp){
+        if(attr[i] == "path"){
+          tmp = tmp.toString()
+        }
+        info[attr[i]] = tmp
+      }
+    }
+    return info
+}
+
+
+  loadShape = function(shape, noattachlistener){
+    var instance = editor//instance?instance:Ax.canvas
+    if(!shape || !shape.type || !shape.id)return;
+    
+	  var newshape = null, draw = instance.draw;editor
+    if(!(newshape=editor.getShapeById(shape.id))){
+	    if(shape.type == "rect"){
+	      newshape = draw.rect(0, 0,0, 0)
+	    }else if(shape.type == "path"){
+	      newshape = draw.path("")
+	    }else if(shape.type == "image"){
+        newshape = draw.image(shape.src, 0, 0, 0, 0)
+      }else if(shape.type == "ellipse"){
+        newshape = draw.ellipse(0, 0, 0, 0)
+      }else if(shape.type == "text"){
+        newshape = draw.text(0, 0, shape.text)
+      }
+    }
+    newshape.attr(shape)
+    newshape.id = shape.id
+    newshape.subtype = shape.subtype
+
+    if (!noattachlistener) {
+      instance.addShape(newshape,true)
+    }
+}
+
+      $(document).ready(function(){
+      editor = new VectorEditor(document.getElementById("canvas"), $(window).width(),$(window).height());
+      //editor.draw.rect(100,100,480,272).attr("stroke-width", 0).attr("fill", "white")
+      setMode("select");
+    })
+    $(window).resize(function(){
+      editor.draw.setSize($(window).width(),$(window).height())
+      editor.on("select", function(event,shape){
+        //shape.attr("")
+      })
+    })
+
+  </script>
+</body>
+<!-- SOMEBODY FIX THIS HTML -->
